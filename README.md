@@ -58,3 +58,26 @@ Se creo la entidad `User`, repositorio `UserRepository` y el servicio `UserServi
     - Se integro una logica de maper con MapStruct en el `UserService`. Se creo la interface `UserMappe`.
     - Se actualizaron los tests para verificar que el servicio ahora procesa y retorna DTOs en lugar de la Entidad pura.
 
+## Ciclo 2: Registro de Usuario - Email formato incorrrecto (Capa de Servicio)
+
+### Fase 🔴 RED:
+
+Se creo el test `saveError_emailIncorrect` en `UserServiceTest`. Fallo por que no genero la excepcion esperada.
+
+``` 
+Expected com.tdd.laboratorio_tdd_spring.exception.EmailIncorrectException to be thrown, but nothing was thrown.
+org.opentest4j.AssertionFailedError: Expected com.tdd.laboratorio_tdd_spring.exception.EmailIncorrectException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:159)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:74)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3223)
+	at com.tdd.laboratorio_tdd_spring.service.UserServiceTest.saveError_emailIncorrect(UserServiceTest.java:54)
+```
+
+### Fase 🟢  GREEN:
+
+Se agrego validacion al email usando la expresion regular `^[A-Za-z0-9+_.-]+@(.+)$`. El test paso.
+
+### Fase 🔵 REFACTOR:
+
+Se extrajo la expresión regular a una constante estática EMAIL_PATTERN y se utilizó Pattern.compile() para optimizar el rendimiento de la validación, evitando recompilar la Regex en cada llamada.

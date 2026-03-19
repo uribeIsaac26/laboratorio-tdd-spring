@@ -1,22 +1,20 @@
 package com.tdd.laboratorio_tdd_spring.service;
 
-import com.tdd.laboratorio_tdd_spring.dto.UserRequest;
-import com.tdd.laboratorio_tdd_spring.dto.UserResponse;
+import com.tdd.laboratorio_tdd_spring.dto.UserRequestDto;
+import com.tdd.laboratorio_tdd_spring.dto.UserResponseDto;
 import com.tdd.laboratorio_tdd_spring.entity.User;
+import com.tdd.laboratorio_tdd_spring.exception.EmailIncorrectException;
 import com.tdd.laboratorio_tdd_spring.mapper.UserMapper;
 import com.tdd.laboratorio_tdd_spring.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,18 +32,29 @@ public class UserServiceTest {
 
     @Test
     public void mustSaveSuccessfully(){
-        User userForSave = new User(null, "Name test", "test@gmail.com");
-        User userSaved = new User(1L, "Name test", "test@gmail.com");
+        User userForSave = new User(null, "Name test", "test.test@gmail.com");
+        User userSaved = new User(1L, "Name test", "test.test@gmail.com");
 
-        UserRequest userRequest = new UserRequest("Name test", "test@gmail.com");
-        UserResponse userResponse = new UserResponse(1L, "Name test", "test@gmail.com");
+        UserRequestDto userRequestDto = new UserRequestDto("Name test", "test.test@gmail.com");
+        UserResponseDto userResponseDto = new UserResponseDto(1L, "Name test", "test.test@gmail.com");
 
         when(userRepository.save(userForSave)).thenReturn(userSaved);
 
-        UserResponse result = userService.save(userRequest);
+        UserResponseDto result = userService.save(userRequestDto);
 
         assertNotNull(result.getId());
-        assertEquals(result, userResponse);
+        assertEquals(result, userResponseDto);
         verify(userRepository, times(1)).save(userForSave);
+    }
+
+    @Test
+    public void saveError_emailIncorrect(){
+        UserRequestDto userRequestDto = new UserRequestDto ("Name Test", "test");
+
+        EmailIncorrectException exception = assertThrows(EmailIncorrectException.class, ()->{
+            userService.save(userRequestDto);
+        });
+
+        assertEquals("El Email tiene un formato incorrecto", exception.getMessage());
     }
 }
