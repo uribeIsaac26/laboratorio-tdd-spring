@@ -81,3 +81,29 @@ Se agrego validacion al email usando la expresion regular `^[A-Za-z0-9+_.-]+@(.+
 ### Fase 🔵 REFACTOR:
 
 Se extrajo la expresión regular a una constante estática EMAIL_PATTERN y se utilizó Pattern.compile() para optimizar el rendimiento de la validación, evitando recompilar la Regex en cada llamada.
+
+
+
+## Ciclo 3: Registro de Usuario (Capa de repository)
+
+### Fase 🔴 RED: 
+
+Se crea el test de integracion `mustSaveSuccessfully` en `UserRepositoryTest` usando `@DataJpaTest`. Falla el test por el siguiente error:
+
+```java
+error: cannot find symbol
+@DataJpaTest
+ ^
+  symbol: class DataJpaTest
+```
+
+### Fase 🟢  GREEN:
+
+Se cambio la version de spring boot por una mas antigua, a causa de que no reconocia la anotacion `@DataJpaTest`. Adicionalmente se modifico el nombre de la tabla en db `@Table(name = "users")` 
+a causa de que esto generaba un error en el test. El test paso.
+
+### Fase 🔵 REFACTOR:
+
+
+Se hacen correcciones de idioma en el codigo.
+
